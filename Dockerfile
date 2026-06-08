@@ -6,11 +6,12 @@ COPY . /app
 WORKDIR /app
 
 FROM base AS build
+RUN npm install -g pnpm@latest-11
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store  pnpm i --frozen-lockfile
 RUN pnpm build
 
 # Production stage
-FROM nginx:stable-alpine as production-stage
+FROM nginx:stable-alpine AS production-stage
 COPY ./conf/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist /usr/share/nginx/html
 EXPOSE 80
