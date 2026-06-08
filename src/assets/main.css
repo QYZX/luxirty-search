@@ -36,6 +36,11 @@ a,
 }
 
 /* 自定义 Google CSE 样式 */
+
+.gsib_b {
+  padding: 0 !important;
+}
+
 .gsc-control-cse {
   font-family: inherit !important;
   border: none !important;
@@ -71,26 +76,22 @@ a,
 }
 
 .gsc-search-box.gsc-search-box-tools {
+
   display: flex;
   z-index: 3;
   position: relative;
-  min-height: 44px;
-  border: 1px solid transparent;
+  min-height: 50px;
   background: #fff;
-  box-shadow: 0 2px 5px 1px rgba(64, 60, 67, .16);
-  border-radius: 24px;
+  border: 1px solid #dadce0;
+  box-shadow: 0px 3px 10px 0px rgba(31, 31, 31, 0.08);
+  border-radius: 26px;
   margin: 0 auto;
-  padding-left: 12px;
-  padding-right: 12px;
-  width: 692px;
-  height: 46px;
+
 }
 
-.gsc-search-box-tools:hover {
+.gsc-search-box.gsc-search-box-tools:hover {
   background: #fff;
   box-shadow: 0 2px 8px 1px rgba(64, 60, 67, .24);
-  border-color: transparent;
-  border-radius: 24px;
 }
 
 /* 针对小屏幕的样式 */
