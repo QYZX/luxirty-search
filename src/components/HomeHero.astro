@@ -1,0 +1,67 @@
+---
+interface Props {
+  resultsUrl: string;
+}
+
+const { resultsUrl } = Astro.props;
+---
+<div class="home">
+  <div class="about">
+    <a href="https://luxirty.com/posts/luxirty-search/" target="_blank">关于</a>
+  </div>
+  <div class="logo">Luxirty Search</div>
+  <div class="search-container">
+    <div class="gcse-searchbox-only" data-resultsUrl={resultsUrl}></div>
+  </div>
+
+  <!-- 页脚由调用方传入，保持首页的绝对定位布局 -->
+  <slot />
+</div>
+
+<style>
+  .home {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .logo {
+    position: absolute;
+    top: 35vh;
+    font-size: 48px;
+    font-weight: bold;
+  }
+
+  .search-container {
+    position: absolute;
+    top: calc(35vh + 100px);
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  @media (max-width: 600px) {
+    .logo {
+      font-size: 35px;
+      top: 37vh;
+    }
+
+    .search-container {
+      top: calc(37vh + 80px);
+    }
+  }
+
+  .about {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }
+
+  .about a {
+    text-decoration: none;
+    font-size: 16px;
+    color: var(--uv-styles-color-text-default);
+  }
+</style>

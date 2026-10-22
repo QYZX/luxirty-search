@@ -1,0 +1,86 @@
+---
+interface Props {
+  /** home: 首页绝对定位页脚；results: 结果页带边框的普通页脚 */
+  variant?: "home" | "results";
+}
+
+const { variant = "results" } = Astro.props;
+const isHome = variant === "home";
+---
+<footer class:list={[isHome ? "footer-home" : "footer-results"]}>
+  <p>
+    &copy; Create by <a href="https://luxirty.com/about/" target="_blank">Luxirty</a>{" with "}
+    {isHome ? "Love" : "♥"} | Open Source on{" "}
+    <a href="https://github.com/KoriIku/luxiry-search" target="_blank">GitHub</a>
+  </p>
+</footer>
+
+<style>
+  footer {
+    text-align: center;
+    font-size: 14px;
+  }
+
+  footer a {
+    color: #156bc8;
+    font-weight: bold;
+    transition:
+      color 0.3s ease,
+      text-shadow 0.3s ease;
+  }
+
+  footer a:hover {
+    color: #0056b3;
+    text-decoration: underline;
+    text-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  }
+
+  footer img {
+    width: 16px;
+    height: 16px;
+    vertical-align: text-top;
+    margin-right: 3px;
+    opacity: 0.8;
+  }
+
+  /* 首页：绝对定位在视口底部 */
+  .footer-home {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    color: var(--uv-styles-color-text-default);
+  }
+
+  /* 结果页：跟随内容流的带边框页脚 */
+  .footer-results {
+    background-color: #f8f9fa;
+    padding: 10px 0;
+    color: #6c757d;
+    border-top: 1px solid #dee2e6;
+    margin-top: 36px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .footer-home {
+      background-color: #1a1a1a;
+    }
+
+    .footer-results {
+      background-color: #222222;
+      color: #cccccc;
+      border-top: 1px solid #444444;
+    }
+
+    footer a {
+      color: #80a0c2;
+    }
+
+    footer a:hover {
+      color: #a0c3e0;
+    }
+
+    footer img {
+      opacity: 0.9;
+    }
+  }
+</style>

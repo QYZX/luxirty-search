@@ -1,0 +1,56 @@
+---
+import "@/styles/main.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "Luxirty Search",
+  description = "Luxirty Search 为专业人士优化，去除内容农场，无广告，简洁，快。",
+} = Astro.props;
+---
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <link
+      rel="search"
+      type="application/opensearchdescription+xml"
+      href="/opensearch.xml"
+      title="Luxirty Search"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="keywords" content="效率工具, 搜索引擎" />
+    <slot name="head" />
+  </head>
+  <body>
+    <!-- main.css 依赖 #app 作为布局容器，保持与原 SPA 一致 -->
+    <div id="app">
+      <slot />
+    </div>
+
+    <!-- 页面级脚本（如 Google CSE）放在 #app 之后 -->
+    <slot name="bodyEnd" />
+
+    <!-- 静态 HTML 已经可见，Service Worker 注册不再阻塞任何渲染 -->
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker
+          .register(`${import.meta.env.BASE_URL}service-worker.js`)
+          .then((registration) => {
+            console.log("Service Worker 注册成功，作用域为: ", registration.scope);
+            return registration.update();
+          })
+          .catch((err) => {
+            console.error("Service Worker 注册失败: ", err);
+          });
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,72 @@
+---
+const homeUrl = import.meta.env.BASE_URL;
+---
+<div class="my-container">
+  <div class="search-container" id="searchContainer">
+    <a class="search-title" href={homeUrl}>Luxirty Search</a>
+    <div class="gcse-searchbox"></div>
+  </div>
+  <div class="search-result-zone">
+    <div class="gcse-searchresults" data-linkTarget="_blank" data-refinementStyle="link"></div>
+  </div>
+
+  <!-- 页脚由调用方传入，保持 flex 布局中结果区占满剩余高度 -->
+  <slot />
+</div>
+
+<style>
+  .my-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    max-width: var(--center-width);
+    min-width: 320px;
+    box-sizing: border-box;
+  }
+
+  .search-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-top: 26px;
+    margin-left: 28px;
+    min-height: 48px;
+  }
+
+  .search-title {
+    font-size: 24px;
+    color: #58636f;
+    margin-right: 20px;
+    white-space: nowrap;
+    user-select: none;
+    text-decoration: none;
+  }
+
+  @media (max-width: 600px) {
+    .search-container {
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 10px;
+      margin-top: 10px;
+      margin-left: 0px;
+      min-height: 48px;
+      width: 100vw;
+    }
+
+    .search-title {
+      font-size: 20px;
+      margin-bottom: 10px;
+      margin-right: 0;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .search-title {
+      color: #d1d5db;
+    }
+  }
+
+  .search-result-zone {
+    flex-grow: 1;
+  }
+</style>

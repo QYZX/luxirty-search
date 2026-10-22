@@ -1,0 +1,54 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import SearchPage from "@/components/SearchPage.astro";
+import Footer from "@/components/Footer.astro";
+
+const cx = import.meta.env.PUBLIC_GOOGLE_CSE_CX;
+---
+<BaseLayout title="搜索 - Luxirty Search">
+  <Fragment slot="head">
+    <script is:inline define:vars={{ base: import.meta.env.BASE_URL }}>
+      // 必须在 cse.js 之前定义，否则 rendered 回调会丢失
+      window.__gcse = window.__gcse || {};
+      window.__gcse.searchCallbacks = {
+        web: {
+          rendered() {
+            document.querySelectorAll("a.gs-title").forEach((anchor) => {
+              anchor.removeAttribute("data-cturl");
+              anchor.removeAttribute("data-ctorig");
+            });
+
+            const input =
+              document.querySelector('.gsc-input input[name="search"]') ||
+              document.getElementsByName("search")[0];
+            const q = input && input.value;
+            if (q) {
+              document.title = `${q} - Luxirty Search`;
+            }
+          },
+        },
+      };
+
+      // 直接访问 /search 且没有查询参数时回到首页
+      const initialQuery = new URLSearchParams(location.search).get("q");
+      if (!initialQuery) {
+        location.replace(base);
+      } else {
+        document.title = `${initialQuery} - Luxirty Search`;
+      }
+    </script>
+  </Fragment>
+
+  <SearchPage>
+    <Footer variant="results" />
+  </SearchPage>
+
+  <Fragment slot="bodyEnd">
+    <script
+      is:inline
+      async
+      data-cfasync="false"
+      src={`https://cse.google.com/cse.js?cx=${cx}`}
+    ></script>
+  </Fragment>
+</BaseLayout>

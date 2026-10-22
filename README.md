@@ -71,17 +71,17 @@ Luxirty Search 基于 Google 的可编程自定义搜索引擎(Google cse)，允
 
 # 部署
 
-本质上而言，这是一个简单的 vue3 + vite 项目，因此你应该可以方便地将它部署到任何你喜欢的托管网站，例如 GitHub Pages、netfliy、Cloudflare Pages、vercel之类的。
+本质上而言，这是一个 Astro + Vue Islands 项目：页面通过 Astro 在构建时输出为静态 HTML，Vue 仅用于需要交互的组件（按需加载）。因此你可以方便地将它部署到任何你喜欢的静态托管网站，例如 GitHub Pages、Netlify、Cloudflare Pages、Vercel 之类的。
 
 当然你也可以将其部署在自己的服务器上。
 
-无论你喜欢哪种方式，都只需要查看 vite 部署教程: https://cn.vitejs.dev/guide/static-deploy
+无论你喜欢哪种方式，都只需要查看 Astro 部署文档: https://docs.astro.build/zh-cn/guides/deploy/
 
-(可选)如果你想使用自己的cse，只需设置环境变量 `VITE_GOOGLE_CSE_CX` ，从这里创建你的 cse 并获取 cx： https://programmablesearchengine.google.com/about/
+(可选)如果你想使用自己的cse，只需设置环境变量 `PUBLIC_GOOGLE_CSE_CX` ，从这里创建你的 cse 并获取 cx： https://programmablesearchengine.google.com/about/
 
 注意：
 1. 如果你使用自己创建的 cse，那么的部署看起来会有区别，页面上的“For Program”等标签是通过 cse 的 “优化” 功能配置的。你需要先添加域名，然后添加对应标签，并在标签中选中想提升的域名。
-2. 你还需要修改 opensearch.xml 中的域名，详细请看 https://github.com/KoriIku/luxirty-search/issues/14
+2. 你还需要通过 `OPEN_SEARCH_URL_BASE` 修改 opensearch.xml 中的域名（构建时生成），详细请看 https://github.com/KoriIku/luxirty-search/issues/14
 
 ## 一键部署(推荐)
 ### Deploy with Vercel

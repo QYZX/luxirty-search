@@ -1,0 +1,23 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import HomeHero from "@/components/HomeHero.astro";
+import Footer from "@/components/Footer.astro";
+
+const cx = import.meta.env.PUBLIC_GOOGLE_CSE_CX;
+const resultsUrl = `${import.meta.env.BASE_URL}search`;
+---
+<BaseLayout>
+  <HomeHero resultsUrl={resultsUrl}>
+    <Footer variant="home" />
+  </HomeHero>
+
+  <Fragment slot="bodyEnd">
+    <!-- 必须放在容器之后：CSE 脚本执行时要能扫描到 .gcse-* 节点 -->
+    <script
+      is:inline
+      async
+      data-cfasync="false"
+      src={`https://cse.google.com/cse.js?cx=${cx}`}
+    ></script>
+  </Fragment>
+</BaseLayout>
