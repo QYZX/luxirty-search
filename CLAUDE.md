@@ -8,12 +8,22 @@ Luxirty Search — 基于 Google CSE (Custom Search Engine) 的搜索引擎前�
 
 技术栈：**Astro 7（静态输出）+ Vue 3（按需 Islands）**。页面在构建时输出为静态 HTML，Google CSE 在浏览器端完成搜索 UI 和结果渲染；Vue 仅在需要交互的组件中使用。
 
+## 构建与验证
+
+**本项目的正式编译统一使用 Docker 镜像构建：**
+
+```sh
+docker image build --tag luxirty-search .
+```
+
+提交前至少运行一次该命令。`pnpm build` 只用于本地快速检查，不作为最终编译验证。
+
 ## 开发命令
 
 ```sh
 pnpm install          # 安装依赖
 pnpm dev              # 本地开发（Astro dev server，热重载）
-pnpm build            # 生产构建，产物输出到 dist/
+pnpm build            # 本地快速构建，产物输出到 dist/（最终验证用 Docker）
 pnpm preview          # 预览生产构建
 pnpm check            # Astro + TypeScript 类型检查
 ```
@@ -23,8 +33,8 @@ pnpm check            # Astro + TypeScript 类型检查
 ## Docker
 
 ```sh
-# 构建
-docker build -t luxirty-search .
+# 构建（正式编译命令）
+docker image build --tag luxirty-search .
 
 # 运行（默认 80 端口）
 docker run --rm -p 80:80 ghcr.io/koriiku/luxirty-search
