@@ -7,11 +7,20 @@ const { resultsUrl } = Astro.props;
 ---
 <div class="home">
   <div class="about">
-    <a href="https://luxirty.com/posts/luxirty-search/" target="_blank">关于</a>
+    <a href="https://luxirty.com/posts/luxirty-search/" target="_blank" rel="noopener noreferrer">
+      关于
+    </a>
   </div>
-  <div class="logo">Luxirty Search</div>
+  <h1 class="logo">Luxirty Search</h1>
   <div class="search-container">
     <div class="gcse-searchbox-only" data-resultsUrl={resultsUrl}></div>
+
+    <noscript>
+      <form class="fallback-search" action={resultsUrl} method="get">
+        <input type="search" name="q" placeholder="搜索..." aria-label="搜索" required />
+        <button type="submit">搜索</button>
+      </form>
+    </noscript>
   </div>
 
   <!-- 页脚由调用方传入，保持首页的绝对定位布局 -->
@@ -22,6 +31,7 @@ const { resultsUrl } = Astro.props;
   .home {
     position: relative;
     height: 100vh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -40,6 +50,33 @@ const { resultsUrl } = Astro.props;
     width: 100%;
     display: flex;
     justify-content: center;
+  }
+
+  .fallback-search {
+    display: flex;
+    gap: 8px;
+    width: min(100% - 32px, 560px);
+  }
+
+  .fallback-search input {
+    flex: 1;
+    min-width: 0;
+    padding: 10px 16px;
+    font: inherit;
+    color: inherit;
+    background: transparent;
+    border: 1px solid var(--uv-styles-color-outline);
+    border-radius: 26px;
+  }
+
+  .fallback-search button {
+    padding: 10px 20px;
+    font: inherit;
+    color: #fff;
+    cursor: pointer;
+    background: var(--uv-styles-color-primary);
+    border: none;
+    border-radius: 26px;
   }
 
   @media (max-width: 600px) {

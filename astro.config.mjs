@@ -5,11 +5,24 @@ import { fileURLToPath, URL } from "node:url";
 
 const env = loadEnv(process.env.NODE_ENV ?? "production", process.cwd(), "");
 
+/** 归一化为 Astro 要求的 / 或 /sub/ 形式 */
+function normalizeBase(value = "/") {
+  if (!value || value === "/" || value === "./") {
+    return "/";
+  }
+  return `/${value.replace(/^\/+|\/+$/g, "")}/`;
+}
+
+if (!env.PUBLIC_GOOGLE_CSE_CX) {
+  console.warn(
+    "[luxirty-search] 未设置 PUBLIC_GOOGLE_CSE_CX，构建产物中的搜索框将无法工作。",
+  );
+}
+
 // https://astro.build/config
 export default defineConfig({
-  site: "https://search.luxirty.com",
-  // 必须是 / 或 /sub/，不能是相对路径。子路径部署时设置 BASE_PATH=/sub/
-  base: env.BASE_PATH || "/",
+  site: env.SITE_URL || "https://search.luxirty.com",
+  base: normalizeBase(env.BASE_PATH),
   integrations: [vue()],
   // /search -> search.html，保持无尾斜杠的干净 URL
   build: { format: "file" },

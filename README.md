@@ -87,7 +87,7 @@ Luxirty Search 基于 Google 的可编程自定义搜索引擎(Google cse)，允
 ### Deploy with Vercel
 (搜索页404的问题已修复)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FKoriIku%2Fluxiry-search&project-name=luxirty-search&repository-name=luxirty-search)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FKoriIku%2Fluxirty-search&project-name=luxirty-search&repository-name=luxirty-search)
 
 ### Deploy to Netlify
 [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/KoriIku/luxirty-search)
@@ -115,8 +115,11 @@ pnpm dev
 ### Compile and Minify for Production
 
 ```sh
+pnpm check
 pnpm build
 ```
+
+运行时要求 Node.js >= 22.12。
 
 
 # 更新记录

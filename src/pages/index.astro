@@ -3,10 +3,30 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import HomeHero from "@/components/HomeHero.astro";
 import Footer from "@/components/Footer.astro";
 
+import { withBase } from "@/utils/url";
+
 const cx = import.meta.env.PUBLIC_GOOGLE_CSE_CX;
-const resultsUrl = `${import.meta.env.BASE_URL}search`;
+const resultsUrl = withBase("search");
+const siteUrl = Astro.site ?? new URL("https://search.luxirty.com");
+const searchTarget = new URL(resultsUrl, siteUrl).href;
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Luxirty Search",
+  url: siteUrl.href,
+  potentialAction: {
+    "@type": "SearchAction",
+    target: `${searchTarget}?q={search_term_string}`,
+    "query-input": "required name=search_term_string",
+  },
+};
 ---
 <BaseLayout>
+  <Fragment slot="head">
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(websiteSchema)} />
+  </Fragment>
+
   <HomeHero resultsUrl={resultsUrl}>
     <Footer variant="home" />
   </HomeHero>

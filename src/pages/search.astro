@@ -2,12 +2,18 @@
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import SearchPage from "@/components/SearchPage.astro";
 import Footer from "@/components/Footer.astro";
+import { withBase } from "@/utils/url";
 
 const cx = import.meta.env.PUBLIC_GOOGLE_CSE_CX;
+const homeUrl = withBase();
 ---
-<BaseLayout title="搜索 - Luxirty Search">
+<BaseLayout
+  title="搜索 - Luxirty Search"
+  description="使用 Luxirty Search 搜索：屏蔽内容农场、无广告、无跟踪。"
+  robots="noindex, follow"
+>
   <Fragment slot="head">
-    <script is:inline define:vars={{ base: import.meta.env.BASE_URL }}>
+    <script is:inline define:vars={{ base: homeUrl }}>
       // 必须在 cse.js 之前定义，否则 rendered 回调会丢失
       window.__gcse = window.__gcse || {};
       window.__gcse.searchCallbacks = {

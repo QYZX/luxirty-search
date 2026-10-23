@@ -15,6 +15,7 @@ pnpm install          # 安装依赖
 pnpm dev              # 本地开发（Astro dev server，热重载）
 pnpm build            # 生产构建，产物输出到 dist/
 pnpm preview          # 预览生产构建
+pnpm check            # Astro + TypeScript 类型检查
 ```
 
 生产构建产物在 `dist/` 目录，可直接部署到任意静态托管。
@@ -39,6 +40,7 @@ Docker 构建使用多阶段：`node:26-slim` 构建 → `nginx:stable-alpine` �
 |------|------|--------|
 | `PUBLIC_GOOGLE_CSE_CX` | Google CSE 引擎 ID（必填，会暴露给浏览器） | 项目默认值 |
 | `BASE_PATH` | 部署基础路径，必须是 `/` 或 `/sub/` | `/` |
+| `SITE_URL` | 站点地址，用于 canonical / Open Graph | `https://search.luxirty.com` |
 | `OPEN_SEARCH_SHORT_NAME` | OpenSearch 短名称（仅构建期） | Luxirty Search |
 | `OPEN_SEARCH_URL_BASE` | OpenSearch URL 基础（仅构建期） | https://search.luxirty.com |
 
@@ -59,6 +61,8 @@ Astro 负责路由、HTML 壳、SEO 和静态资源；Google CSE 负责全部搜
 │   ├── pages/
 │   │   ├── index.astro           # 首页 /
 │   │   ├── search.astro          # 结果页 /search?q=xxx
+│   │   ├── 404.astro             # 自定义 404 页面
+│   │   ├── robots.txt.ts         # 构建时生成 /robots.txt（随 BASE_PATH 变化）
 │   │   └── opensearch.xml.ts     # 构建时生成 /opensearch.xml
 │   ├── components/
 │   │   ├── HomeHero.astro        # 首页：Logo + 搜索框
@@ -69,12 +73,12 @@ Astro 负责路由、HTML 壳、SEO 和静态资源；Google CSE 负责全部搜
 │       └── main.css              # Google CSE 样式覆盖（核心 UI 定制）
 ├── public/
 │   ├── service-worker.js         # 广告请求拦截（拦截 adsense 请求）
-│   ├── opensearch.bak.xml        # OpenSearch 描述文件备份
 │   └── favicon.ico
 ├── conf/
-│   └── nginx.conf                # Docker Nginx 配置（try_files 支持 /search）
+│   └── nginx.conf                # Docker Nginx 配置（clean URL、gzip、缓存头）
 ├── docs/
-│   └── block_list.txt            # 内容农场屏蔽域名列表
+│   ├── block_list.txt            # 内容农场屏蔽域名列表
+│   └── opensearch.bak.xml        # OpenSearch 描述文件备份（不参与部署）
 ├── astro.config.mjs              # Astro 配置（base、file 输出格式、Vue 集成）
 ├── tsconfig.json
 ├── vercel.json                   # Vercel cleanUrls 配置
@@ -108,12 +112,16 @@ Astro 负责路由、HTML 壳、SEO 和静态资源；Google CSE 负责全部搜
 
 - `/` → `dist/index.html`
 - `/search?q=xxx` → `dist/search.html`
+- `/404` → `dist/404.html`
+- `/robots.txt` → 构建时由 `src/pages/robots.txt.ts` 生成
 - `/opensearch.xml` → 构建时由 `src/pages/opensearch.xml.ts` 生成
 
 ### 部署注意事项
 
-- **Nginx**：`try_files $uri $uri.html $uri/ /404.html;`，让 `/search` 命中 `search.html`。不再使用 SPA fallback。
+- **Nginx**：`try_files $uri $uri.html $uri/ =404;` + `error_page 404 /404.html;`，让 `/search` 命中 `search.html`，同时返回正确的 404 状态码。已开启 gzip，并对 `/_astro/` 设置一年缓存、对 HTML 和 Service Worker 设置 no-cache。
 - **Vercel**：使用 `cleanUrls: true`，不要写 `/(.*) -> /` 的 catch-all rewrite，否则 `/search` 会被改写回首页。
 - **Netlify**：默认 pretty URLs 即可，不需要 SPA `_redirects`。
+- **子路径部署**：设置 `BASE_PATH=/sub/`。内部链接统一通过 `src/utils/url.ts` 的 `withBase()` 生成，不要直接拼接 `import.meta.env.BASE_URL`。
 - **Service Worker**：`public/service-worker.js` 必须部署在站点根路径，才能获得根作用域。
 - **Vue 岛**：需要交互组件时使用 `<Component client:load />`；没有岛时不会向浏览器加载 Vue runtime。
+- **CI 架构**：`node:26-slim` 不提供 `linux/arm/v7` manifest，GitHub Actions 只构建 `linux/amd64,linux/arm64`。如需 32 位 ARM，需要把基础镜像改为 `node:22-slim`。

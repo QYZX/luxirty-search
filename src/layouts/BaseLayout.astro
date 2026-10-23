@@ -1,32 +1,65 @@
 ---
 import "@/styles/main.css";
+import { withBase } from "@/utils/url";
 
 interface Props {
   title?: string;
   description?: string;
+  robots?: string;
 }
 
 const {
   title = "Luxirty Search",
   description = "Luxirty Search 为专业人士优化，去除内容农场，无广告，简洁，快。",
+  robots = "index, follow",
 } = Astro.props;
+
+// 静态构建时 Astro.url.pathname 是 /index.html、/search.html，
+// canonical 需要还原成对外暴露的 clean URL。
+const cleanPath = Astro.url.pathname
+  .replace(/\/index\.html$/, "/")
+  .replace(/\.html$/, "");
+const canonical = Astro.site
+  ? new URL(cleanPath, Astro.site)
+  : undefined;
 ---
 <!doctype html>
 <html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" href={withBase("favicon.ico")} />
     <link
       rel="search"
       type="application/opensearchdescription+xml"
-      href="/opensearch.xml"
+      href={withBase("opensearch.xml")}
       title="Luxirty Search"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
+    <meta name="robots" content={robots} />
+
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="keywords" content="效率工具, 搜索引擎" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#181818" media="(prefers-color-scheme: dark)" />
+
+    {canonical && <link rel="canonical" href={canonical.href} />}
+    {canonical && <meta property="og:url" content={canonical.href} />}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Luxirty Search" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:locale" content="zh_CN" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+
+    <!-- Google CSE 的脚本与接口都在这些域名下，提前建连 -->
+    <link rel="preconnect" href="https://cse.google.com" />
+    <link rel="preconnect" href="https://www.google.com" />
+    <link rel="dns-prefetch" href="https://cse.google.com" />
+    <link rel="dns-prefetch" href="https://www.google.com" />
     <slot name="head" />
   </head>
   <body>
@@ -38,15 +71,12 @@ const {
     <!-- 页面级脚本（如 Google CSE）放在 #app 之后 -->
     <slot name="bodyEnd" />
 
-    <!-- 静态 HTML 已经可见，Service Worker 注册不再阻塞任何渲染 -->
     <script>
+      import { withBase } from "@/utils/url";
+
       if ("serviceWorker" in navigator) {
         navigator.serviceWorker
-          .register(`${import.meta.env.BASE_URL}service-worker.js`)
-          .then((registration) => {
-            console.log("Service Worker 注册成功，作用域为: ", registration.scope);
-            return registration.update();
-          })
+          .register(withBase("service-worker.js"))
           .catch((err) => {
             console.error("Service Worker 注册失败: ", err);
           });

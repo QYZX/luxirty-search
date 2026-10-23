@@ -9,9 +9,14 @@ const isHome = variant === "home";
 ---
 <footer class:list={[isHome ? "footer-home" : "footer-results"]}>
   <p>
-    &copy; Create by <a href="https://luxirty.com/about/" target="_blank">Luxirty</a>{" with "}
+    &copy; Create by{" "}
+    <a href="https://luxirty.com/about/" target="_blank" rel="noopener noreferrer">Luxirty</a>{" with "}
     {isHome ? "Love" : "♥"} | Open Source on{" "}
-    <a href="https://github.com/KoriIku/luxiry-search" target="_blank">GitHub</a>
+    <a
+      href="https://github.com/KoriIku/luxirty-search"
+      target="_blank"
+      rel="noopener noreferrer">GitHub</a
+    >
   </p>
 </footer>
 
@@ -46,7 +51,7 @@ const isHome = variant === "home";
   /* 首页：绝对定位在视口底部 */
   .footer-home {
     position: absolute;
-    bottom: 20px;
+    bottom: calc(20px + env(safe-area-inset-bottom, 0px));
     width: 100%;
     color: var(--uv-styles-color-text-default);
   }
